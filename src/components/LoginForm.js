@@ -19,18 +19,20 @@ class LoginForm extends Component {
             loading: true
         });
 
-        firebase.auth().signInWithEmailAndPassword(email, password).then(()=>{
+        firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
             this.onLoginSuccess();
         }).catch(() => {
-            this.onLoginFail();
+            // this.onLoginFail();
+            // if the user cannot login with the credentials; create a new account
+            firebase.auth().createUserWithEmailAndPassword(email, password).then(()=>{
+                this.onLoginSuccess();
+            }).catch(() => {
+                this.onLoginFail();
+
+            });
         })
     }
 
-    // firebase.auth().createUserWithEmailAndPassword(email, password).catch(() => {
-    //
-    //     this.setState({error: " User creation failed"});
-    //
-    // });
 
     renderButton() {
 
@@ -45,18 +47,18 @@ class LoginForm extends Component {
         );
     }
 
-    onLoginSuccess(){
+    onLoginSuccess() {
         this.setState({
-            email:'',
-            password:'',
-            loading:false,
-            error:''
+            email: '',
+            password: '',
+            loading: false,
+            error: ''
 
         });
 
     }
 
-    onLoginFail(){
+    onLoginFail() {
         this.setState({
             error: "Authentication failed",
             loading: false
